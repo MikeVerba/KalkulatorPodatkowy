@@ -71,7 +71,7 @@ public class TaxWorker {
                 }
                 case "3" :
                 {
-                    double result = (countSalary(salaries) - countTax(taxValues))*0.18;
+                    double result = Math.round((countSalary(salaries) - countTax(taxValues))*0.18);
                     double result2 = countVat(salaries,taxValues);
 
                     printer.print(menu.getResultFirstText()+result+menu.getResultSecondText()+result2);
@@ -173,7 +173,7 @@ public class TaxWorker {
             sumSalary+=salaries[i].getSalary()*((0.1*salaries[i].getSalary()));
         }
 
-        return sumSalary - sumCost;
+        return Math.round(sumSalary - sumCost);
 
     }
 }
