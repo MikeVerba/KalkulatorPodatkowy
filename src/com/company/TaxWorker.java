@@ -61,17 +61,27 @@ public class TaxWorker {
                         printer.print(menu.getLitmitExceededText());
                         break;
                     }
+
+                    printer.print(menu.getAddSalaryNameText());
+                    String someSalaryName = scanner.next();
+
                     printer.print(menu.getAddSalaryValueText());
                     double someSalary = scanner.nextDouble();
 
                     printer.print(menu.getVatValueText());
                     double someSalaryVatValue = scanner.nextDouble();
 
+                    addSalary(someSalary,someSalaryVatValue,someSalaryName);
+
                     break;
                 }
                 case "3" :
+                    if(taxValuesCounter<1 && salariesCounter<1){
+                        printer.print(menu.getEmptyValuesText());
+                        break;
+                    }
                 {
-                    double result = Math.round((countSalary(salaries) - countTax(taxValues))*0.18);
+                    double result = Math.round((countSalary() - countTax())*0.18);
                     double result2 = countVat(salaries,taxValues);
 
                     printer.print(menu.getResultFirstText()+result+menu.getResultSecondText()+result2);
@@ -80,6 +90,71 @@ public class TaxWorker {
                     break;
                 }
                 case "4" :
+                    if(salariesCounter<1){
+                        printer.print(menu.getEmptyValuesText());
+                        break;
+                    }
+
+                {
+                    printer.print(menu.getPrintSalarySumText() + countSalariesSum());
+                    break;
+                }
+                case "5" :
+                    if(taxValuesCounter<1){
+                        printer.print(menu.getEmptyValuesText());
+                        break;
+                    }
+                {
+                    printer.print(menu.getPrintCostSumText() + countCostsSum());
+                    break;
+                }
+                case "6" :
+                    if(taxValuesCounter<1){
+                        printer.print(menu.getEmptyValuesText());
+                        break;
+                    }
+                {
+                    printer.print(menu.getPrintCostNamesText());
+
+                    String[] costNames = returnCostNames();
+                    for (int i = 0; i<taxValuesCounter; i++){
+                        printer.print(costNames[i]);
+                    }
+                    break;
+                }
+                case "7" :
+                    if(salariesCounter<1){
+                        printer.print(menu.getEmptyValuesText());
+                        break;
+                    }
+                {
+                    printer.print(menu.getPrintSalariesNamesText());
+
+                    String[] salariesNames = returnSalariesNames();
+                    for (int i = 0; i<salariesCounter; i++){
+                        printer.print(salariesNames[i]);
+                    }
+                    break;
+                }
+                case "8":
+                    if(salariesCounter<1){
+                        printer.print(menu.getEmptyValuesText());
+                        break;
+                    }
+                {
+                    printer.print(menu.getPrintMaxSalaryText()+returnMaxIncome());
+                    break;
+                }
+                case "9":
+                    if(taxValuesCounter<1){
+                        printer.print(menu.getEmptyValuesText());
+                        break;
+                    }
+                {
+                    printer.print(menu.getPrintMinCostText()+returnMinTax());
+                    break;
+                }
+                case "0" :
                 {
                     printer.print(menu.getExitText());
                     isWorking = false;
@@ -110,7 +185,7 @@ public class TaxWorker {
 
     }
 
-    public void addSalary(double someSalary, double salaryVatValue){
+    public void addSalary(double someSalary, double salaryVatValue,String someSalaryName){
 
 
 
@@ -118,6 +193,7 @@ public class TaxWorker {
             Salary salary = new Salary();
             salary.setSalary(someSalary);
             salary.setSalaryVatValue(salaryVatValue);
+            salary.setName(someSalaryName);
 
             salaries[salariesCounter] = salary;
             salariesCounter++;
@@ -126,7 +202,7 @@ public class TaxWorker {
     }
 
 
-    public double countTax(TaxValue[] taxValues){ //suma netto kosztów na output
+    public double countTax(){ //suma netto kosztów na output
 
         double sum = 0;
 
@@ -139,7 +215,7 @@ public class TaxWorker {
         return sum;
     }
 
-    public double countSalary(Salary[] salaries){ //suma netto zarobku na output
+    public double countSalary(){ //suma netto zarobku na output
 
         double sum = 0;
 
@@ -175,5 +251,59 @@ public class TaxWorker {
 
         return Math.round(sumSalary - sumCost);
 
+    }
+
+    public double countCostsSum(){  //liczy wszystkie koszty - zagadnienie 1
+        double costSum = 0;
+        for(int i = 0; i<taxValuesCounter; i++){
+            costSum+=taxValues[i].getValue();
+        }
+        return costSum;
+    }
+
+    public double countSalariesSum(){  //liczy wszystkie dochody - zagadnienie 2
+        double salariesSum = 0;
+        for(int i = 0; i<salariesCounter; i++){
+            salariesSum+=salaries[i].getSalary();
+        }
+        return salariesSum;
+    }
+
+    public double returnMaxIncome() {    //liczy najwyzszy dochod
+
+        double maxIncome = salaries[0].getSalary();
+
+        for(int i = 0; i<salariesCounter; i++){
+            if(salaries[i].getSalary() > maxIncome){
+                maxIncome = salaries[i].getSalary();
+            }
+        }
+        return maxIncome;
+    }
+    public double returnMinTax() {    //liczy najnizszy koszt
+
+        double minIncome = taxValues[0].getValue();
+
+        for(int i = 0; i<taxValuesCounter; i++){
+            if(taxValues[i].getValue() < minIncome){
+                minIncome = taxValues[i].getValue();
+            }
+        }
+        return minIncome;
+    }
+
+    public String[] returnCostNames() {   //zwraca nazwy kosztow
+        String[] costNames = new String[taxValuesCounter];
+        for(int i = 0; i<taxValuesCounter; i++){
+            costNames[i] = taxValues[i].getName();
+        }
+        return costNames;
+    }
+    public String[] returnSalariesNames() {  //zwraca nazwy dochodow
+        String[] salariesNames = new String[salariesCounter];
+        for (int i = 0; i < salariesCounter; i++) {
+            salariesNames[i] = salaries[i].getName();
+        }
+        return salariesNames;
     }
 }

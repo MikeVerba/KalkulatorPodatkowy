@@ -1,6 +1,8 @@
 package com.company;
 
 public class Salary {
+
+    private String name;
     private double salary;
     private double salaryVatValue;
 
@@ -20,4 +22,11 @@ public class Salary {
         this.salaryVatValue = salaryVatValue;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 }

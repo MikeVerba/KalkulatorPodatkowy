@@ -2,8 +2,6 @@ package com.company;
 
 public class TaxValue {
 
-
-
     private String name;
     private double value;
     private double vatValue;
